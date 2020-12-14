@@ -1,0 +1,46 @@
+---
+- hosts: salanco
+  connection: ssh
+
+  gather_facts: no
+  become: yes
+
+  vars:
+  - API_KEY: f9171529769800b628975ca492192be2
+
+  tasks:
+# name: starting block
+  block:
+  - name: getting amplify installer 
+    get_url:
+      url: https://github.com/nginxinc/nginx-amplify-agent/raw/master/packages/install.sh
+      dest: /tmp/amplify-install.sh
+      mode: 0775
+  
+  - name: source aggreate env var 
+    shell: "export API_KEY='{{ API_KEY }}' "
+ 
+  - name:  run amplify-install
+    command: "/tmp/amplify-install.sh" 
+
+  rescue:
+  - name: Got Error or not 
+    debug: 
+      msg: ' Got error'
+  always:
+  - name: adding stub status
+    copy: 
+      src: files/stub.conf
+      dest: /etc/nginx/conf.d/stub_status.conf
+      mode: 0750
+    #notify: reload_nginx
+
+
+  handlers:
+  - name: reload_nginx 
+    service: 
+      name: nginx
+      state: relaoded
+      enabled: yes
+
+    
