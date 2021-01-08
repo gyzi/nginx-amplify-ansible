@@ -1,12 +1,12 @@
 ---
-- hosts: salanco
+- hosts: all
   connection: ssh
 
   gather_facts: no
   become: yes
 
   vars:
-  - API_KEY: f9171529769800b628975ca492192be2
+  - API_KEY: 
 
   tasks:
 # name: starting block
